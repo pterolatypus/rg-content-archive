@@ -1,0 +1,9 @@
+{
+  "name": "RG Custom Content Pack",
+  "prefix": "x/rg",
+  "author": "Reality Gaming",
+  "files": [
+    "mod.cpp"
+  ],
+  "sigversion": 3
+}

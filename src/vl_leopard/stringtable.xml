@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project name="RG">
+    <Package name="leopard_2sg">
+
+        <!-- Vehicles -->
+        <Key ID="STR_rg_vl_leopard_base_displayName">
+            <English>Leopard 2SG (Base)</English>
+        </Key>
+        <Key ID="STR_rg_vl_leopard_base_displayNameShort">
+            <English>Leopard 2SG</English>
+        </Key>
+
+        <Key ID="STR_rg_vl_leopard_woodland_displayName">
+            <English>Leopard 2SG (Woodland)</English>
+        </Key>
+        <Key ID="STR_rg_vl_leopard_woodland_displayNameShort">
+            <English>Leopard 2SG</English>
+        </Key>
+
+        <Key ID="STR_rg_vl_leopard_desert_displayName">
+            <English>Leopard 2SG (Desert)</English>
+        </Key>
+        <Key ID="STR_rg_vl_leopard_desert_displayNameShort">
+            <English>Leopard 2SG</English>
+        </Key>
+
+        <Key ID="STR_rg_vl_leopard_snow_displayName">
+            <English>Leopard 2SG (Snow)</English>
+        </Key>
+        <Key ID="STR_rg_vl_leopard_snow_displayNameShort">
+            <English>Leopard 2SG</English>
+        </Key>
+
+    </Package>
+</Project>

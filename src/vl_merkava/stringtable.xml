@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project name="RG">
+    <Package name="merkava_mk4">
+
+        <!-- Vehicles -->
+        <Key ID="STR_rg_vl_merkava_base_displayName">
+            <English>Merkava Mk4 (Base)</English>
+        </Key>
+        <Key ID="STR_rg_vl_merkava_base_displayNameShort">
+            <English>Merkava Mk4</English>
+        </Key>
+
+        <Key ID="STR_rg_vl_merkava_woodland_displayName">
+            <English>Merkava Mk4 (Woodland)</English>
+        </Key>
+        <Key ID="STR_rg_vl_merkava_woodland_displayNameShort">
+            <English>Merkava Mk4</English>
+        </Key>
+
+        <Key ID="STR_rg_vl_merkava_desert_displayName">
+            <English>Merkava Mk4 (Desert)</English>
+        </Key>
+        <Key ID="STR_rg_vl_merkava_desert_displayNameShort">
+            <English>Merkava Mk4</English>
+        </Key>
+
+        <Key ID="STR_rg_vl_merkava_snow_displayName">
+            <English>Merkava Mk4 (Snow)</English>
+        </Key>
+        <Key ID="STR_rg_vl_merkava_snow_displayNameShort">
+            <English>Merkava Mk4</English>
+        </Key>
+
+    </Package>
+</Project>

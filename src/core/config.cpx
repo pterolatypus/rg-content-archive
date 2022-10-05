@@ -1,0 +1,22 @@
+${metaClass.propertyMissing = {name -> name}}
+#include "component.hpp"
+${include this,"script_macros.groovy"}
+#include "script_macros.hpp"
+
+class CfgPatches {
+  class $addon {
+    ADDONINFO(Core);
+    VERSION_CONFIG;
+    requiredAddons[] = {
+      "A3_Data_F_Enoch_Loadorder"
+    };
+    units[] = {};
+  };
+};
+
+#include "CfgFactionClasses.cpp"
+#include "CfgEditorSubcategories.cpp"
+#include "CfgWorlds.cpp"
+#include "CfgMarkers.cpp"
+#include "CfgHints.cpp"
+#include "menu.cpp"

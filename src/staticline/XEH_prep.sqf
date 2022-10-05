@@ -1,0 +1,15 @@
+PREP(isEnabled);
+PREP(actionSelfCheck);
+PREP(canHook);
+PREP(canJump);
+PREP(canSoloJump);
+PREP(canStartJump);
+PREP(canUnhook);
+PREP(doJump);
+PREP(doSelfCheck);
+PREP(handleChuteFailure);
+PREP(hookOnUnit);
+PREP(setJumpmaster);
+PREP(startJump);
+PREP(unhookUnit);
+PREP(updateJumpList);

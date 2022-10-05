@@ -1,0 +1,11 @@
+PREP(addLoadoutCollections);
+PREP(getChildActions);
+PREP(getCollectionChildActions);
+PREP(getLoadoutFromCollection);
+PREP(getUnitLoadout);
+PREP(module_setStartingLoadout);
+PREP(onRespawn);
+PREP(onUnitInitServer);
+PREP(saveLoadoutToCollection);
+PREP(setUnitLoadout);
+PREP(setUnitLoadoutFromCollection);

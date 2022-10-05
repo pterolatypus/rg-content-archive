@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project name="RGTF">
+    <Package name="fv510_warrior">
+
+        <!-- Vehicles -->
+        <Key ID="STR_RG_vl_warrior_base_displayName">
+            <English>FV510 Warrior (Base)</English>
+        </Key>
+        <Key ID="STR_RG_vl_warrior_base_displayNameShort">
+            <English>FV510 Warrior</English>
+        </Key>
+
+        <Key ID="STR_RG_vl_warrior_olive_displayName">
+            <English>FV510 Warrior (Olive)</English>
+        </Key>
+        <Key ID="STR_RG_vl_warrior_olive_displayNameShort">
+            <English>FV510 Warrior</English>
+        </Key>
+
+        <Key ID="STR_RG_vl_warrior_woodland_displayName">
+            <English>FV510 Warrior (Woodland)</English>
+        </Key>
+        <Key ID="STR_RG_vl_warrior_woodland_displayNameShort">
+            <English>FV510 Warrior</English>
+        </Key>
+
+        <Key ID="STR_RG_vl_warrior_desert_displayName">
+            <English>FV510 Warrior (Desert)</English>
+        </Key>
+        <Key ID="STR_RG_vl_warrior_desert_displayNameShort">
+            <English>FV510 Warrior</English>
+        </Key>
+
+        <Key ID="STR_RG_vl_warrior_snow_displayName">
+            <English>FV510 Warrior (Snow)</English>
+        </Key>
+        <Key ID="STR_RG_vl_warrior_snow_displayNameShort">
+            <English>FV510 Warrior</English>
+        </Key>
+
+        <Key ID="STR_RG_vl_warrior_un_displayName">
+            <English>FV510 Warrior (UN)</English>
+        </Key>
+        <Key ID="STR_RG_vl_warrior_un_displayNameShort">
+            <English>FV510 Warrior</English>
+        </Key>
+
+        <!-- Weapons -->
+        <Key ID="STR_RG_30mm_L21A1_displayName">
+            <English>L21A1 Rarden 30mm Cannon</English>
+        </Key>
+        <Key ID="STR_RG_30mm_L21A1_displayNameShort">
+            <English>L21A1 Rarden</English>
+        </Key>
+
+        <Key ID="STR_RG_762_L94A1_displayName">
+            <English>L94A1 Chain Gun</English>
+        </Key>
+        <Key ID="STR_RG_762_L94A1_displayNameShort">
+            <English>L94A1</English>
+        </Key>
+
+        <Key ID="STR_RG_safe_displayName">
+            <English>Weapon Safety</English>
+        </Key>
+        <Key ID="STR_RG_safe_displayNameShort">
+            <English>SAFE</English>
+        </Key>
+        <Key ID="STR_RG_safe_displayNameMagazine">
+            <English>SAFE</English>
+        </Key>
+        <Key ID="STR_RG_safe_shortNameMagazine">
+            <English>SAFE</English>
+        </Key>
+
+        <!-- Magazines -->
+        <Key ID="STR_RG_6Rnd_30mm_APFSDS_Red_displayName">
+            <English>6Rnd APDS-T 30mm</English>
+        </Key>
+        <Key ID="STR_RG_6Rnd_30mm_APFSDS_Red_displayNameShort">
+            <English>APDS-T 30mm</English>
+        </Key>
+
+        <Key ID="STR_RG_6Rnd_30mm_HE_Red_displayName">
+            <English>6Rnd HEI-T 30mm</English>
+        </Key>
+        <Key ID="STR_RG_6Rnd_30mm_HE_Red_displayNameShort">
+            <English>HEI-T 30mm</English>
+        </Key>
+
+        <Key ID="STR_RG_250Rnd_762x51_Red_displayName">
+            <English>250Rnd 7.62x51mm</English>
+        </Key>
+        <Key ID="STR_RG_250Rnd_762x51_Red_displayNameShort">
+            <English>7.62x51mm</English>
+        </Key>
+
+    </Package>
+</Project>

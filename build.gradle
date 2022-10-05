@@ -1,0 +1,408 @@
+class Armake extends DefaultTask {
+  @InputDirectory
+  File inputDirectory
+
+  @OutputFile
+  File outputFile
+
+  @Internal
+  File executable
+  @Internal
+  File workspace
+
+  @Internal
+  List<String> excludes = new ArrayList<>();
+  @Internal
+  List<String> includes = new ArrayList<>();
+  @Internal
+  List<String> warnings = new ArrayList<>();
+
+  @Internal
+  boolean force = true;
+  @Internal
+  boolean verbose = false;
+
+  void from(File f) {
+    inputDirectory = f
+  }
+
+  void from(Task t) {
+    dependsOn(t)
+    from(t.getOutputs().getFiles().getSingleFile())
+  }
+
+  void into(File f) {
+    outputFile = f
+  }
+
+  void into(String path) {
+    into(project.file(path))
+  }
+
+  void include(String... paths) {
+    for (String p : paths) includes.add(p)
+  }
+
+  void include(File... files) {
+    for (File f : files) includes.add(f.toPath().toString())
+  }
+
+  //not certain that this will work
+  void includeFrom(Task task) {
+    dependsOn(task)
+    for (File f : task.getOutputs().getFiles()) includes.add(f.toPath().toString())
+  }
+
+  void exclude(String... patterns) {
+      excludes.addAll(patterns)
+  }
+
+  void suppressWarnings(String... warningsToSuppress) {
+      warnings.addAll(warningsToSuppress)
+  }
+
+  @TaskAction
+  void doCompile() {
+    outputFile.getParentFile().mkdirs()
+    List<String> command = new ArrayList<>()
+    command.add(executable.toPath().toString())
+    if(force) command.add("-f")
+    if(verbose) command.add("-v")
+    command.add("build")
+    for (String inc : includes) {
+      command.add("-i")
+      command.add(inc)
+    }
+    for (String ex : excludes) {
+      command.add("-x")
+      command.add(ex)
+    }
+    for (String w : warnings) {
+        command.add("-w")
+        command.add(w)
+    }
+    command.add(inputDirectory.toPath().toString())
+    command.add(outputFile.toPath().toString())
+    def pb = new ProcessBuilder(command).redirectErrorStream(true).redirectOutput(ProcessBuilder.Redirect.INHERIT)
+    project.logger.info(pb.command().toString())
+    def proc = pb.start()
+    if (proc.waitFor() > 0) throw new TaskExecutionException(this, new Exception(proc.text))
+  }
+}
+
+plugins {
+  id 'ivy-publish'
+  id 'com.limark.gitflowsemver' version '0.3.0'
+}
+
+ext.toolsDir = "$projectDir/tools"
+ext.armake = "$toolsDir/armake/armake2.exe"
+
+buildDir = "build/"
+ext.stageDir = "$buildDir/stage"
+ext.outDir = "$buildDir/@RG_ContentPack_Dev"
+ext.workspace = project.file("../..")
+
+task clean (type: Delete) {
+  delete outDir
+  delete stageDir
+  delete buildDir
+}
+
+allprojects {
+  
+  ext.mainprefix = "x"
+  ext.prefix = "rg"
+  ext.subprefix = "addons"
+  ext.author = "Reality Gaming"
+  ext.reqVersion = "1.82"
+
+  task unstage (type: Delete) {
+    delete stageDir
+  }
+}
+
+ext.versionParts = (version =~ /^(\d+)\.(\d+)\.(\d+)\-?(.*)/)[0]
+ext.versionShort = "${versionParts[1]}.${versionParts[2]}"
+ext.versionNum = "${versionParts[1]}.${versionParts[2]}.${versionParts[3]}"
+
+if (versionParts[4].equals("") || versionParts[4].contains("rc")) {
+  ext.keyName = "RGContent-$versionNum"
+  ext.versionStr = versionNum
+} else {
+  ext.keyName = "RG_Dev2"
+  ext.versionStr = "$versionNum-SNAPSHOT"
+}
+
+task listVersions {
+  doLast {
+    def offset = Math.ceil(subprojects.collect({p -> p.name.length()}).max()/8)
+    subprojects.each({p -> println "$p.name${'\t'.multiply(offset-Math.floor(p.name.length()/8))} $p.version"})
+  }
+}
+
+//belongs to parent project
+task copyResources (type: Copy) {
+  from "$projectDir/res"
+  include "**/*"
+  into buildDir
+}
+
+task genKey (type: Exec) {
+  inputs.property "keyName",keyName
+  workingDir "$rootProject.projectDir/keys"
+  outputs.upToDateWhen {
+    file(/${rootProject.projectDir}\keys\${project.keyName}.biprivatekey/).exists()
+  }
+  commandLine "$rootProject.toolsDir/armake/armake2.exe","keygen",/${rootProject.projectDir}\keys\${project.keyName}/
+}
+
+void execSignExternal(String fileName) {
+    exec {
+        commandLine "$rootProject.toolsDir/armake/armake2.exe","sign","-f",/${rootProject.projectDir}\keys\${project.keyName}.biprivatekey/,/$outDir\addons\${fileName}/
+    }
+}
+
+task signExternals {
+    dependsOn copyResources,genKey
+    String modName = file(outDir).name
+    inputs.files fileTree(dir:"$projectDir/res/${modName}/addons", include:"*.pbo")
+    for (File f : inputs.getFiles()) {
+        outputs.file "$outDir/addons/${f.name}.${project.keyName}.bisign"
+    }
+    doLast {
+        inputs.getFiles().each{
+            execSignExternal(it.name)
+        }
+    }
+}
+
+task cleanupSigs (type: Delete) {
+    delete fileTree(dir: "$outDir/addons", include:"*.bisign", exclude:"*.${project.keyName}.bisign")
+}
+
+task copyPublicKey (type: Copy) {
+  from "$projectDir/keys/${project.keyName}.bikey"
+  into "$outDir/keys/"
+}
+
+void doSymlink(String link, String target) {
+    exec {
+        ignoreExitValue true
+        var ignoreStream = new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+            }
+        }
+        file(link).getParentFile().mkdirs()
+        standardOutput = ignoreStream
+        errorOutput = ignoreStream
+        commandLine "echo $target"
+        commandLine "cmd", "/c", "mklink /H ${link} ${target}"
+    }
+}
+
+subprojects {
+
+//never quite got this working
+repositories {
+  ivy {
+        url "s3://dev.realitygamer.org/ivy"
+        credentials(AwsCredentials) {
+            accessKey ""
+            secretKey ""
+        }
+    }
+}
+
+group = 'org.realitygamer'
+ext.component = project.name
+version = rootProject.version
+buildDir = rootProject.buildDir
+ext.stageDir = "$rootProject.stageDir/$mainprefix/$prefix/$subprefix/$component"
+ext.outDir = rootProject.outDir
+if ("uniforms_d".equals(project.name)) ext.outDir = "$buildDir/@RGEssential_Dev"
+ext.keyName = rootProject.keyName
+
+configurations {
+  build
+}
+
+task setupWorkspace {
+  mustRunAfter rootProject.clean
+  outputs.upToDateWhen{file(buildDir).exists() && file(stageDir).exists() && file(outDir).exists()}
+  doLast {
+    file(buildDir).mkdirs()
+    file(stageDir).mkdirs()
+    file(outDir).mkdirs()
+  }
+}
+
+ext.include = { groovy.lang.Script script, Object path ->
+  def shell = new GroovyShell(script.getBinding());
+  shell.parse(project.file(path.toString())).run()
+  return "//Include file: $path"
+}
+
+task generatePrefix {
+  dependsOn setupWorkspace
+  inputs.properties ([
+    mainprefix: project.mainprefix,
+    prefix: project.prefix,
+    subprefix: project.subprefix,
+    addon: project.name
+    ])
+  outputs.file "$stageDir/\$PBOPREFIX\$"
+  doLast {
+    file("$stageDir/\$PBOPREFIX\$").text = "prefix=$mainprefix\\$prefix\\$subprefix\\$component"
+  }
+}
+
+task generateComponentHeader {
+  dependsOn setupWorkspace
+  inputs.properties ([
+    prefix: project.prefix,
+    subprefix: project.subprefix,
+    component: project.name,
+    author: project.author,
+    version: project.version
+    ])
+  outputs.file "$stageDir/component.hpp"
+  doLast {
+    file ("$stageDir/component.hpp").text = """
+#define PREFIX $project.prefix
+#define COMPONENT $project.name
+#define AUTHGROUP $project.author
+#define AUTHOR QUOTE(AUTHGROUP)
+
+#define COREPATH $project.mainprefix\\$project.prefix\\$project.subprefix
+
+#define VERSION_STR $project.versionStr
+#define VERSION ${project.versionParts[1]}.${project.versionParts[2]}
+#define VERSION_AR ${project.versionParts[1]},${project.versionParts[2]},${project.versionParts[3]}
+#define REQUIRED_VERSION $project.reqVersion
+"""
+  }
+}
+
+task stageNormalFiles (type: Copy) {
+  dependsOn setupWorkspace
+  shouldRunAfter generatePrefix,generateComponentHeader
+  from projectDir
+  exclude(
+    "*.cpx",
+    "*.hpx",
+    "*.xcf",
+    "build.gradle",
+    "settings.gradle",
+    "gradle.properties",
+    ".git/",
+    ".gitignore",
+    "build/",
+    "*.groovy"
+    )
+  into stageDir
+}
+
+task stageNormalFilesSymlink {
+    dependsOn setupWorkspace
+    shouldRunAfter generatePrefix,generateComponentHeader
+    inputs.files fileTree("$projectDir").matching {
+        exclude "*.cpx",
+                "*.hpx",
+                "*.xcf",
+                "build.gradle",
+                "settings.gradle",
+                "gradle.properties",
+                ".git/",
+                ".gitignore",
+                "build/",
+                "*.groovy"
+    }.getFiles()
+    inputs.getFiles().each {
+        var relativePath = projectDir.toPath().relativize(it.toPath())
+        var dest = file(stageDir).toPath().resolve(relativePath)
+        outputs.file(dest)
+    }
+    doLast {
+        inputs.getFiles().each {
+            var relativePath = projectDir.toPath().relativize(it.toPath())
+            var link = file(stageDir).toPath().resolve(relativePath)
+            doSymlink(link.toString(),it.getPath())
+        }
+    }
+}
+
+task stageExtendedConfig (type: Copy) {
+  dependsOn setupWorkspace
+  shouldRunAfter stageNormalFiles
+  inputs.property "version",versionStr
+  from projectDir
+  include "*.hpx","*.cpx"
+  rename '(.*).hpx\$', '$1.hpp'
+  rename '(.*).cpx\$', '$1.cpp'
+  expand(project.properties)
+  into stageDir
+}
+
+task stage {
+  dependsOn generatePrefix,generateComponentHeader,stageNormalFilesSymlink,stageExtendedConfig
+  outputs.dir project.stageDir
+}
+
+task compile (type: Armake) {
+  dependsOn rootProject.copyResources // this is necessary because the whole build dir is treated as an output of copyResources, creating conflicts
+  from stage
+  include rootProject.stageDir
+  include rootProject.file("../cba/addons/main")
+  exclude('thumbs.db','*.txt','*.h','*.dep','*.bak','*.png','*.log','*.pew','*.tga','*.xcf')
+  if (!project.file("\$NOBIN\$").exists()) exclude '*.cpp'
+  suppressWarnings('unquoted-string')
+  executable = rootProject.file("tools/armake/armake2.exe")
+  into(/$outDir\addons\rg_${project.name}.pbo/)
+  verbose = true;
+}
+
+task sign (type: Exec) {
+  dependsOn compile
+  dependsOn rootProject.genKey
+  inputs.file project.compile.outputFile
+  outputs.file "$outDir/addons/rg_${project.name}.pbo.${project.keyName}.bisign"
+  workingDir "$outDir/addons"
+  commandLine "$rootProject.toolsDir/armake/armake2.exe","sign","-f",/${rootProject.projectDir}\keys\${project.keyName}.biprivatekey/,/$outDir\addons\rg_${project.name}.pbo/
+}
+
+task build {
+  dependsOn compile,sign,rootProject.copyResources,rootProject.signExternals,rootProject.cleanupSigs,rootProject.copyPublicKey
+}
+
+
+def pboFile = file (/$outDir\addons\rg_${project.name}.pbo/)
+def pboArtifact = artifacts.add('build', pboFile) {
+  type 'pbo'
+  builtBy 'compile'
+}
+
+publishing.publications {
+    Pbo(IvyPublication) {
+      artifact (pboArtifact) {
+        name = "rg_$project.name"
+      }
+    }
+  }
+}
+
+//everything else depends on core
+subprojects {
+  if (project.name != "core") {
+    stage {
+      dependsOn project(":core").stage
+    }
+  }
+}
+
+project(":boxes") {
+  stage {
+    dependsOn project(":units").stage
+  }
+}

@@ -1,0 +1,5 @@
+rootProject.name = "RG Content Pack"
+file("src").eachDir {
+  include(it.name)
+  project(":$it.name").projectDir = file("src/$it.name")
+}

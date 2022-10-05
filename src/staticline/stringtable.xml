@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project name="RG">
+    <Package name="staticline">
+
+        <!-- Actions -->
+        <Key ID="STR_RG_staticline_interact_parent">
+            <English>Static Line</English>
+        </Key>
+        <Key ID="STR_RG_staticline_action_hookon">
+            <English>Hook On</English>
+        </Key>
+        <Key ID="STR_RG_staticline_action_unhook">
+            <English>Unhook</English>
+        </Key>
+        <Key ID="STR_RG_staticline_action_selfcheck">
+            <English>Gear Check</English>
+        </Key>
+        <Key ID="STR_RG_staticline_action_selfcheck_progressbar">
+            <English>Checking Gear</English>
+        </Key>
+        <Key ID="STR_RG_staticline_action_solojump">
+            <English>Solo Jump</English>
+        </Key>
+        <Key ID="STR_RG_staticline_action_becomeJumpMaster">
+            <English>Become Jump Master</English>
+        </Key>
+        <Key ID="STR_RG_staticline_action_releaseJumpMaster">
+            <English>Release Jump Master</English>
+        </Key>
+        <Key ID="STR_RG_staticline_action_startJump">
+            <English>Begin Jump</English>
+        </Key>
+
+        <!-- Settings -->
+        <Key ID="STR_RG_staticline_settings_category">
+            <English>RG Static Line</English>
+        </Key>
+        <Key ID="STR_RG_staticline_setting_minJumpHeight_name">
+            <English>Minimum Jump Height</English>
+        </Key>
+        <Key ID="STR_RG_staticline_setting_minJumpHeight_tooltip">
+            <English>Static Line jumps are only available if the aircraft is above this altitude.</English>
+        </Key>
+        <Key ID="STR_RG_staticline_setting_removeOnDisconnect_name">
+            <English>Remove on disconnect</English>
+        </Key>
+        <Key ID="STR_RG_staticline_setting_removeOnDisconnect_tooltip">
+            <English>Whether to remove a player from the jump list if they disconnect.</English>
+        </Key>
+        <Key ID="STR_RG_staticline_settings_subcat_failure">
+            <English>Parachute Failure</English>
+        </Key>
+        <Key ID="STR_RG_staticline_setting_minFailureChance_name">
+            <English>Min. Parachute Failure Chance</English>
+        </Key>
+        <Key ID="STR_RG_staticline_setting_minFailureChance_tooltip">
+            <English>Minimum chance for a failure to occur, even if you *have* done a gear check</English>
+        </Key>
+        <Key ID="STR_RG_staticline_setting_selfCheckMinTime_name">
+            <English>Gear Check Minimum Time</English>
+        </Key>
+        <Key ID="STR_RG_staticline_setting_selfCheckMinTime_tooltip">
+            <English>If your last gear check was *less* than this many seconds ago, the chance of a failure is *minimum*.</English>
+        </Key>
+        <Key ID="STR_RG_staticline_setting_maxFailureChance_name">
+            <English>Max. Parachute Failure Chance</English>
+        </Key>
+        <Key ID="STR_RG_staticline_setting_maxFailureChance_tooltip">
+            <English>Maximum chance for a parachure failure to occur if you haven't done a gear check recently enough.</English>
+        </Key>
+        <Key ID="STR_RG_staticline_setting_selfCheckMaxTime_name">
+            <English>Gear Check Maximum Time</English>
+        </Key>
+        <Key ID="STR_RG_staticline_setting_selfCheckMaxTime_tooltip">
+            <English>If your last gear check was *more* than this many seconds ago, the chance of a failure is *maximum*.</English>
+        </Key>
+
+        <!-- Interface -->
+        <Key ID="STR_RG_staticline_ui_jumplist_name">
+            <English>Jump List</English>
+        </Key>
+        <Key ID="STR_RG_staticline_ui_jumplist_desc">
+            <English>List of units ready to parachute jump. Only shown if you are the jump master.</English>
+        </Key>
+
+    </Package>
+</Project>

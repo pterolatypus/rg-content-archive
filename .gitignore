@@ -1,0 +1,5 @@
+.gradle/
+.vscode/
+build/
+addons/
+keys/
